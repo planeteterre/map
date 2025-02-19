@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ленинградская область</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ленинградская область</h1>
+    <label for="city-select">Выберите город:</label>
+    <select id="city-select">
+        <option value="gatcina">Гатчина</option>
+        <option value="kirovsk">Кировск</option>
+    </select>
+    <div id="map"></div>
+
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=ВАШ_API_КЛЮЧ&lang=ru_RU" type="text/javascript"></script>
+    <script>
+        ymaps.ready(init);
+
+        function init() {
+            const map = new ymaps.Map('map', {
+                center: [59.934280, 30.335099], // Центр карты (Санкт-Петербург)
+                zoom: 9
+            });
+
+            // Координаты городов
+            const cities = {
+                gatcina: [59.568330, 30.122200], // Гатчина
+                kirovsk: [59.881000, 30.981000] // Кировск
+            };
+
+            // Создаем маркеры для каждого города
+            const gatcinaMarker = new ymaps.Placemark(cities.gatcina, {}, {
+                iconLayout: 'default#image',
+                iconImageHref: 'img.png',
+                iconImageSize: [60, 60], // Размер изображения
+                iconImageOffset: [20, -60] // Смещение для центрирования
+            });
+
+            const kirovskMarker = new ymaps.Placemark(cities.kirovsk, {}, {
+                iconLayout: 'default#image',
+                iconImageHref: 'img.png',
+                iconImageSize: [60, 60], // Размер изображения
+                iconImageOffset: [20, -60] // Смещение для центрирования
+            });
+
+            // Скрываем маркеры по умолчанию
+            gatcinaMarker.options.set('visible', false);
+            kirovskMarker.options.set('visible', false);
+
+            // Добавляем маркеры на карту
+            map.geoObjects.add(gatcinaMarker);
+            map.geoObjects.add(kirovskMarker);
+
+            // Обработчик изменения выпадающего списка
+            const citySelect = document.getElementById('city-select');
+            citySelect.addEventListener('change', function() {
+                const selectedCity = citySelect.value;
+
+                // Скрываем все маркеры
+                gatcinaMarker.options.set('visible', false);
+                kirovskMarker.options.set('visible', false);
+
+                // Показываем маркер для выбранного города
+                if (selectedCity === 'gatcina') {
+                    gatcinaMarker.options.set('visible', true);
+                } else if (selectedCity === 'kirovsk') {
+                    kirovskMarker.options.set('visible', true);
+                }
+
+                // Центрируем карту на Санкт-Петербурге
+                map.setCenter([59.934280, 30.335099], 9);
+            });
+
+            // По умолчанию выбираем Гатчину
+            citySelect.value = 'gatcina';
+            citySelect.dispatchEvent(new Event('change'));
+        }
+    </script>
+</body>
+</html>
